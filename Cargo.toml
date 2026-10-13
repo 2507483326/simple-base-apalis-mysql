@@ -162,7 +162,7 @@ optional = true
 default-features = false
 
 [dependencies.ulid]
-version = "1"
+version = "3"
 features = ["serde"]
 
 [dev-dependencies.apalis]
