@@ -1,0 +1,26 @@
+INSERT INTO
+    jobs(
+        job,
+        id,
+        job_type,
+        status,
+        attempts,
+        max_attempts,
+        run_at,
+        priority,
+        metadata,
+        idempotency_key
+    )
+VALUES
+    (
+        ?,
+        ?,
+        ?,
+        'Pending',
+        0,
+        ?,
+        ?,
+        ?,
+        ?,
+        ?
+    )

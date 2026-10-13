@@ -1,0 +1,83 @@
+# Changelog
+
+## Unreleased
+
+## [1.0.0-rc.8] - 2026-05-08
+
+- _feat_: idempotency for tasks (#56)
+
+## [1.0.0-rc.7] - 2026-04-11
+
+- _bump_: introducing apalis-mysql v1.0.0-rc.7
+
+## [1.0.0-rc.6] - 2026-03-18
+
+- _bump_: introducing apalis-mysql v1.0.0-rc.6
+
+## [1.0.0-rc.4] - 2026-02-21
+
+- _bump_: introducing apalis-mysql v1.0.0-rc.4
+
+## [1.0.0-rc.3] - 2026-02-02
+
+- _bump_: introducing apalis-mysql v1.0.0-rc.3
+
+## [1.0.0-rc.2] - 2026-01-10
+
+- _bump_: introducing apalis-mysql v1.0.0-rc.2
+- feat: use DateTime abstraction from apalis-sql
+- bump: update apalis deps to rc.2
+- _bump_: introducing apalis-mysql v1.0.0-rc.1 (#12)
+
+## [1.0.0-beta.1] - 2025-12-06
+
+- _chore_: introducing apalis-mysql v1 (#6)
+
+## [0.7.0] - 2025-03-17
+
+### 🐛 Bug Fixes
+
+- Reenqueue orphaned before starting streaming (#507)
+
+### 💼 Other
+
+- Generic retry persist check (#498)
+- Add associated types to the `Backend` trait (#516)
+
+## [0.6.4] - 2024-12-03
+
+### 🐛 Bug Fixes
+
+- Allow polling only when worker is ready (#472)
+
+## [0.4.9] - 2024-01-03
+
+### 🚀 Features
+
+- Configurable worker set as dead (#220)
+
+## [0.4.7] - 2023-11-15
+
+### 🐛 Bug Fixes
+
+- Allow cargo build --all-features (#204)
+
+## [0.4.5] - 2023-10-05
+
+### 💼 Other
+
+- Api to get migrations
+
+## [0.4.4] - 2023-07-31
+
+### 🐛 Bug Fixes
+
+- Change approach for mysql
+- Typo in mysql query
+- Typo in mysql query
+
+### 💼 Other
+
+- Sqlx to v0.7
+
+## [0.3.0] - 2022-06-05

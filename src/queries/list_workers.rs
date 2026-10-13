@@ -1,0 +1,98 @@
+use apalis_core::backend::{BackendExt, ListWorkers, RunningWorker};
+use apalis_sql::{DateTime, DateTimeExt};
+use futures::TryFutureExt;
+use ulid::Ulid;
+
+use crate::{CompactType, MySqlContext, MySqlStorage};
+
+#[derive(Debug, sqlx::FromRow)]
+pub struct WorkerRow {
+    pub id: String,
+    pub worker_type: String,
+    pub storage_name: String,
+    pub layers: Option<String>,
+    pub last_seen: Option<DateTime>,
+    pub started_at: Option<DateTime>,
+}
+
+impl<Args: Sync, D, F> ListWorkers for MySqlStorage<Args, D, F>
+where
+    Self: BackendExt<
+            Context = MySqlContext,
+            Compact = CompactType,
+            IdType = Ulid,
+            Error = sqlx::Error,
+        >,
+{
+    fn list_workers(&self) -> impl Future<Output = Result<Vec<RunningWorker>, Self::Error>> + Send {
+        let queue = self.config().queue().to_string();
+        let pool = self.pool.clone();
+        let limit = 100;
+        let offset = 0;
+        async move {
+            let workers = sqlx::query_as::<_, WorkerRow>(include_str!(
+                "../../queries/backend/list_workers.sql"
+            ))
+            .bind(queue)
+            .bind(limit)
+            .bind(offset)
+            .fetch_all(&pool)
+            .map_ok(|w| {
+                w.into_iter()
+                    .map(|w| RunningWorker {
+                        id: w.id,
+                        backend: w.storage_name,
+                        started_at: w
+                            .started_at
+                            .map(|t| t.to_unix_timestamp())
+                            .unwrap_or_default() as u64,
+                        last_heartbeat: w
+                            .last_seen
+                            .map(|t| t.to_unix_timestamp())
+                            .unwrap_or_default() as u64,
+                        layers: w.layers.unwrap_or_default(),
+                        queue: w.worker_type,
+                    })
+                    .collect()
+            })
+            .await?;
+            Ok(workers)
+        }
+    }
+
+    fn list_all_workers(
+        &self,
+    ) -> impl Future<Output = Result<Vec<RunningWorker>, Self::Error>> + Send {
+        let pool = self.pool.clone();
+        let limit = 100;
+        let offset = 0;
+        async move {
+            let workers = sqlx::query_as::<_, WorkerRow>(include_str!(
+                "../../queries/backend/list_all_workers.sql"
+            ))
+            .bind(limit)
+            .bind(offset)
+            .fetch_all(&pool)
+            .map_ok(|w| {
+                w.into_iter()
+                    .map(|w| RunningWorker {
+                        id: w.id,
+                        backend: w.storage_name,
+                        started_at: w
+                            .started_at
+                            .map(|t| t.to_unix_timestamp())
+                            .unwrap_or_default() as u64,
+                        last_heartbeat: w
+                            .last_seen
+                            .map(|t| t.to_unix_timestamp())
+                            .unwrap_or_default() as u64,
+                        layers: w.layers.unwrap_or_default(),
+                        queue: w.worker_type,
+                    })
+                    .collect()
+            })
+            .await?;
+            Ok(workers)
+        }
+    }
+}
